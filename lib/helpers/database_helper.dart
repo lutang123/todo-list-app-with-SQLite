@@ -4,6 +4,32 @@ import 'package:flutter_todo_list/models/task_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+const initScript = [
+  '''
+create table users (
+  id INTEGER PRIMARY KEY ASC,
+  )
+''',
+  '''
+create table carriers (
+  id INTEGER PRIMARY KEY ASC,
+);
+''',
+  '''
+create table documents (
+  id INTEGER PRIMARY KEY ASC,
+  description text,
+  todo_list_id integer not null,
+  CONSTRAINT fk_carriers
+    FOREIGN KEY (carriers_id)
+    REFERENCES carriers(id)
+);
+''',
+]; // Initialization script split into seperate statements
+
+const migrationScripts =
+    []; // Migration sql scripts, containing a single statements per migration
+
 class DatabaseHelper {
   //Named constructor to create instance of DatabaseHelper
   //this is our constructor
@@ -40,18 +66,35 @@ class DatabaseHelper {
     //we create a dir from path_provider method
     Directory dir = await getApplicationDocumentsDirectory();
     //we go to our current path and then make a new file called todo_list.db
-    String path = dir.path + '/todo_list.db';
+    String path = dir.path + '/tdg_mobile.db';
     //openDatabase
     final todoListDb =
         //we use sqflite package function openDatabase
-        await openDatabase(path, version: 1, onCreate: _createDb);
+        await openDatabase(
+      path,
+      version: 1,
+      onCreate:
+          //     (Database db, int version) async {
+          //   initScript.forEach((script) async => await db.execute(script));
+          // },
+          _createDb,
+      // onUpgrade: (Database db, int oldVersion, int newVersion) async {
+      //   migrationScripts.forEach((script) async => await db.execute(script));
+      // },
+    );
     return todoListDb;
   }
 
   void _createDb(Database db, int version) async {
     //we use sqflite package function db.execute(sql)
     await db.execute(
-      'CREATE TABLE $tasksTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colTitle TEXT, $colDate TEXT, $colPriority TEXT, $colStatus INTEGER)',
+      'CREATE TABLE $tasksTable('
+      '$colId INTEGER PRIMARY KEY AUTOINCREMENT, '
+      '$colTitle TEXT, '
+      '$colDate TEXT, '
+      '$colPriority TEXT, '
+      '$colStatus INTEGER,'
+      ')',
     );
   }
 

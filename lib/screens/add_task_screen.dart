@@ -20,6 +20,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   TextEditingController _dateController = TextEditingController();
   //from intl package
   final DateFormat _dateFormatter = DateFormat('MMM dd, yyyy');
+
   final List<String> _priorities = ['Low', 'Medium', 'High'];
 
   @override
@@ -71,7 +72,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     if (_formKey.currentState.validate()) {
       //it's going to call the onSave method inside each of teh for field
       _formKey.currentState.save();
-      print('$_title, $_date, $_priority');
+      // print('$_title, $_date, $_priority');
 
       Task task = Task(title: _title, date: _date, priority: _priority);
       if (widget.task == null) {
@@ -100,7 +101,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         child: SingleChildScrollView(
           //only one container
           child: Container(
-            //add Container to wrap Column to give is padding
+            //add Container to wrap Column to give padding
             padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 80.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
